@@ -18,7 +18,7 @@
     <target name="compile" depends="init"
             description="compile the source " >
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac srcdir="${src}" destdir="${build}" classpath="3rdparty/stdlib-package.jar"/>
+        <javac includeantruntime="false" srcdir="${src}" destdir="${build}" classpath="3rdparty/stdlib-package.jar"/>
     </target>
 
     <target name="dist" depends="compile"
@@ -27,7 +27,7 @@
         <mkdir dir="${dist}/lib"/>
 
         <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${dist}/lib/Voronoi.jar" basedir="${build}">
+        <jar jarfile="${dist}/Voronoi.jar" basedir="${build}">
             <zipgroupfileset dir="${3rdparty}" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="org.ajwerner.voronoi.Voronoi"/>
