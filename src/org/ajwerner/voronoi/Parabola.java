@@ -15,8 +15,8 @@ public class Parabola {
     }
 
     public void draw(double min, double max) {
-        min = (min > -1.1) ? min : -1.1;
-        max = (max < 1.1) ? max : 1.1;
+        min = (min > -2) ? min : -2;
+        max = (max < 2) ? max : 2;
         for (double x = min; x < max; x += .001) {
             double y = ((x-a)*(x-a) + (b*b) - (c*c)) / (2*(b-c));
             StdDraw.point(x, y);

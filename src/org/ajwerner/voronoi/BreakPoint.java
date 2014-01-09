@@ -70,31 +70,38 @@ public class BreakPoint {
         }
         cacheSweepLoc = l;
 
-        // This method works by intersecting the line of the edge with the parabola of the higher point
-        // I'm not sure why I chose the higher point, either should work
-        double px = (s1.y > s2.y) ? s1.x : s2.x;
-        double py = (s1.y > s2.y) ? s1.y : s2.y;
-        double m = e.m;
-        double b = e.b;
-
-        double d = 2*(py - l);
-
-        // Straight up quadratic formula
-        double A = 1;
-        double B = -2*px - d*m;
-        double C = sq(px) + sq(py) - sq(l) - d*b;
-        int sign = (s1.y > s2.y) ? -1 : 1;
-        double det = sq(B) - 4 * A * C;
-        // When rounding leads to a very very small negative determinant, fix it
-        double x;
-        if (det <= 0) {
-            x = -B / (2 * A);
+        double x,y;
+        // Handle the vertical line case
+        if (s1.y == s2.y) {
+            x = (s1.x + s2.x) / 2; // x coordinate is between the two sites
+            // comes from parabola focus-directrix definition:
+            y = (sq(x - s1.x) + sq(s1.y) - sq(l)) / (2* (s1.y - l));
         }
         else {
-            x = (-B + sign * Math.sqrt(det)) / (2 * A);
-        }
-        double y = m*x + b;
+            // This method works by intersecting the line of the edge with the parabola of the higher point
+            // I'm not sure why I chose the higher point, either should work
+            double px = (s1.y > s2.y) ? s1.x : s2.x;
+            double py = (s1.y > s2.y) ? s1.y : s2.y;
+            double m = e.m;
+            double b = e.b;
 
+            double d = 2*(py - l);
+
+            // Straight up quadratic formula
+            double A = 1;
+            double B = -2*px - d*m;
+            double C = sq(px) + sq(py) - sq(l) - d*b;
+            int sign = (s1.y > s2.y) ? -1 : 1;
+            double det = sq(B) - 4 * A * C;
+            // When rounding leads to a very very small negative determinant, fix it
+            if (det <= 0) {
+                x = -B / (2 * A);
+            }
+            else {
+                x = (-B + sign * Math.sqrt(det)) / (2 * A);
+            }
+            y = m*x + b;
+        }
         cachePoint = new Point(x, y);
         return cachePoint;
     }
