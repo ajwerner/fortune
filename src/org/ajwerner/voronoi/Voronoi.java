@@ -32,7 +32,7 @@ public class Voronoi {
                 sites.add(new Point(rnd.nextDouble(), rnd.nextDouble()));
             }
             StdDraw.setCanvasSize(1024, 1024);
-            StdDraw.setScale(-.25, 1.25);
+            StdDraw.setScale(-.1, 1.1);
             Voronoi v = new Voronoi(sites, true);
             v.show();
         }
