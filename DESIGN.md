@@ -52,7 +52,7 @@ Vertical lines, particularly when the first two points have the same y-coordinat
 ### External Libraries
 
 The only external library I use is the standard library from [Algorithms, 4th Edition](http://algs4.cs.princeton.edu/home/), the jar for which can be found in 3rd party.
-Also, for my Point class, the ccw function was taken directly from the [Point2D class](http://algs4.cs.princeton.edu/12oop/Point2D.java.htm) from Algs 4 and it is cited in the code too.
+Also, for my Point class, the ccw function was taken directly from the [Point2D class](http://algs4.cs.princeton.edu/12oop/Point2D.java.html) from Algs 4 and it is cited in the code too.
 
 ### Runtime
 
