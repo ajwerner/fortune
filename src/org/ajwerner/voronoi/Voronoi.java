@@ -66,41 +66,6 @@ public class Voronoi {
         return stop-start;
     }
 
-    private void show() {
-        StdDraw.clear();
-        for (Point p : sites) {
-            p.draw(StdDraw.RED);
-        }
-        for (VoronoiEdge e : edgeList) {
-            if (e.p1 != null && e.p2 != null) {
-                double topY = (e.p1.y == Double.POSITIVE_INFINITY) ? MAX_DIM : e.p1.y; // HACK to draw from infinity
-                StdDraw.line(e.p1.x, topY, e.p2.x, e.p2.y);
-            }
-        }
-        StdDraw.show();
-    }
-
-    private void draw() {
-        StdDraw.clear();
-        for (Point p : sites) {
-            p.draw(StdDraw.RED);
-        }
-        for (BreakPoint bp : breakPoints) {
-            bp.draw();
-        }
-        for (ArcKey a : arcs.keySet()) {
-            ((Arc) a).draw();
-        }
-        for (VoronoiEdge e : edgeList) {
-            if (e.p1 != null && e.p2 != null) {
-                double topY = (e.p1.y == Double.POSITIVE_INFINITY) ? MAX_DIM : e.p1.y; // HACK to draw from infinity
-                StdDraw.line(e.p1.x, topY, e.p2.x, e.p2.y);
-            }
-        }
-        StdDraw.line(MIN_DIM, sweepLoc, MAX_DIM, sweepLoc);
-        StdDraw.show(1);
-    }
-
     public Voronoi(ArrayList<Point> sites) {
         this(sites, false);
     }
@@ -116,9 +81,6 @@ public class Voronoi {
         for (Point site : sites) {
             events.add(new Event(site));
         }
-        Point bad = new Point(.1, events.first().p.y);
-        events.add(new Event(bad));
-        sites.add(bad);
         sweepLoc = 1000;
         do {
             Event cur = events.pollFirst();
@@ -250,4 +212,40 @@ public class Voronoi {
             events.add(ce);
         }
     }
+
+    private void show() {
+        StdDraw.clear();
+        for (Point p : sites) {
+            p.draw(StdDraw.RED);
+        }
+        for (VoronoiEdge e : edgeList) {
+            if (e.p1 != null && e.p2 != null) {
+                double topY = (e.p1.y == Double.POSITIVE_INFINITY) ? MAX_DIM : e.p1.y; // HACK to draw from infinity
+                StdDraw.line(e.p1.x, topY, e.p2.x, e.p2.y);
+            }
+        }
+        StdDraw.show();
+    }
+
+    private void draw() {
+        StdDraw.clear();
+        for (Point p : sites) {
+            p.draw(StdDraw.RED);
+        }
+        for (BreakPoint bp : breakPoints) {
+            bp.draw();
+        }
+        for (ArcKey a : arcs.keySet()) {
+            ((Arc) a).draw();
+        }
+        for (VoronoiEdge e : edgeList) {
+            if (e.p1 != null && e.p2 != null) {
+                double topY = (e.p1.y == Double.POSITIVE_INFINITY) ? MAX_DIM : e.p1.y; // HACK to draw from infinity
+                StdDraw.line(e.p1.x, topY, e.p2.x, e.p2.y);
+            }
+        }
+        StdDraw.line(MIN_DIM, sweepLoc, MAX_DIM, sweepLoc);
+        StdDraw.show(1);
+    }
 }
+
