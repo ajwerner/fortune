@@ -14,7 +14,8 @@ We recognize that all places where two parabolas meet must lie on edges of the V
 
 As the algorithm progresses, it maintains a wavefront of parabolas often termed the "beachfront" line. 
 
-When two breakpoints collide along the beachfront line a vertex is added to the diagram.
+When two breakpoints collide along the beachfront line a vertex is added to the diagram. 
+This is called a CircleEvent because 
 
 ### Data Structures
 
@@ -34,6 +35,12 @@ When I need successors BreakPoints, I retreive neighboring Arcs and examine thei
 
 BreakPoints represent an ordered tuple of sites, they are stored in a HashSet.
 BreakPoints also represent half edges.
+
+### Code Organization
+
+The Voronoi class takes an ArrayList of Points in its constructor and has a list of edges as a property.
+Most of the heavy lifting is done in the Voronoi constructor with the two event-handling methods.
+It uses these special purpose data-structures rather than a traditional doubly connected edge list because I didn't have a Java implementation of a DCEL handy.
 
 ### Degeneracies
 
