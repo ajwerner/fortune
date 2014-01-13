@@ -10,6 +10,8 @@ import java.util.*;
  * Created by ajwerner on 12/23/13.
  */
 public class Voronoi {
+    public static final double MIN_DRAW_DIM = -5;
+    public static final double MAX_DRAW_DIM = 5;
     private static final double MAX_DIM = 10e10;
     private static final double MIN_DIM = -10e10;
     private double sweepLoc;
@@ -98,7 +100,7 @@ public class Voronoi {
             }
         } while ((events.size() > 0));
 
-        this.sweepLoc -= MIN_DIM; // hack to draw negative infinite points
+        this.sweepLoc = MIN_DIM; // hack to draw negative infinite points
         for (BreakPoint bp : breakPoints) {
             bp.finish();
         }

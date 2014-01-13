@@ -41,8 +41,8 @@ public class Arc extends ArcKey {
         Point r = getRight();
 
         Parabola par = new Parabola(site, v.getSweepLoc());
-        double min = (l.x == Double.NEGATIVE_INFINITY) ? Voronoi.DEFAULT_MIN_DIM : l.x;
-        double max = (r.x == Double.POSITIVE_INFINITY) ? Voronoi.DEFAULT_MAX_DIM : r.x;
+        double min = (l.x == Double.NEGATIVE_INFINITY) ? Voronoi.MIN_DRAW_DIM : l.x;
+        double max = (r.x == Double.POSITIVE_INFINITY) ? Voronoi.MAX_DRAW_DIM : r.x;
         par.draw(min, max);
     }
 
