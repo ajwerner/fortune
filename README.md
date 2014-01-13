@@ -4,7 +4,7 @@ fortune
 Fortune's algorithm for Voronoi diagram creation implemented in Java.
 
 This implementation is based on the description of the algorithm from [Computational Geometry: Algorithms & Applications](http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816).
-A short report documenting the design of this implementation can be found [here](/DESIGN.md).
+A short report documenting the design of this implementation can be found [here](/REPORT.md).
 
 Build
 -----
