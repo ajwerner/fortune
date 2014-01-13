@@ -1,7 +1,5 @@
-# Report
-
-This document is to serve as the report for COS451, the class for which this code was implemented.
-
+####Andrew Werner - 1/13/2014
+## COS451 Final Project Report - Fortune's Algorithm
 ### Algorithm Overview
 
 Fortune's algorithm is a sweepline algorithm for computing the Voronoi diagram on points in the plane.
@@ -14,8 +12,13 @@ We recognize that all places where two parabolas meet must lie on edges of the V
 
 As the algorithm progresses, it maintains a wavefront of parabolas often termed the "beachfront" line. 
 
-When two breakpoints collide along the beachfront line a vertex is added to the diagram. 
-This is called a CircleEvent because 
+When we encounter a new site, we detect where the parabola it defines will intersect the existing beachfront (i.e. which arc it will break). In that instant, the parabola is really just a vertical line shooting up into the beachfront. As the sweepline continues, the two new breakpoints that this site is responsible for will separate from that initial impact point on the beachfront.  
+
+When two breakpoints (boundaries points of the parabolic arcs) collide along the beachfront line a vertex is added to the diagram. Two breakpoints colliding represents the removal of an Arc from the beachfront.
+This is called a CircleEvent because it means that three of the points define a circle that contains no other points. The center of the circle then must be a vertex in the Voronoi diagram.
+These events are the only way vertices can be added to the diagram.
+
+The events are added to the event queue and the algorithm follows handling events as described in [Computational Geometry: Algorithms & Applications](http://www.amazon.com/Computational-Geometry-Applications-Mark-Berg/dp/3642096816) on pages 157-158.
 
 ### Data Structures
 
@@ -31,10 +34,11 @@ The nice observation is that the tree is only used to retreive the Arc above a g
 Arcs can thus be viewed as non-overlapping intervals on the x-axis.
 Arcs are stored in a TreeSet<ArcKey> where I made an abstract class called an ArcKey so that I could use different comparators when storing the Arcs in the tree and when looking for the Arc that contains a give new point.
 When I look for the Arc containing a new Point p I create an ArcQuery(p) and then use the handy floorEntry method on the tree. 
-When I need successors BreakPoints, I retreive neighboring Arcs and examine their breakpoints.
+When I need BreakPoint successors, I retreive neighboring Arcs and examine their breakpoints.
 
-BreakPoints represent an ordered tuple of sites, they are stored in a HashSet.
-BreakPoints also represent half edges.
+BreakPoints are initialized with an ordered pair of sites. We know that a BreakPoint will only exist along the perpendicular bisector of the two sites. Their ordering as well as the y-values of the sites informs the location of the BreakPoint given the current sweepline location. BreakPoint locations are evaluated lazily when they are needed for looking at the ArcTree. BreakPoints also maintain HalfEdge information that points to the Voronoi edge in the diagram that it is a tracing part of. 
+
+BreakPoints are stored in a HashSet. This is necessary because after the algorithm has consumed all of the events, some of the BreakPoints will not have been destroyed. These BreakPoints are on edges that go to infinity and must be finished.
 
 ### Code Organization
 
@@ -44,10 +48,10 @@ It uses these special purpose data-structures rather than a traditional doubly c
 
 ### Degeneracies
 
-The algorithm seems to handle the degenerate cases.
+The algorithm seems to handle most of the degenerate cases.
 When multiple circle events occur at the same point, a 0-length edge is added to the diagram.
-
-Vertical lines, particularly when the first two points have the same y-coordinate are also handled correctly now.
+Vertical lines when the first two points have the same y-coordinate are handled correctly now.
+I'm less certain about if there are many pointa all at the max y-value for the dataset.
 
 ### External Libraries
 
@@ -61,5 +65,5 @@ There are at most a linear number of events (because there are only events for s
 Therefore we claim the algorithm should run in time O(Nlog(N)).
 
 The empircal results ([here](/results.txt)) support this claim.
-
-[timing results](results.txt)
+These runtimes were generated running on a Macbook Pro mid-2012 with 2.3 Ghz Intel Core i7 and 8Gb of RAM. 
+The code was run with the option `-Xmx4G` allocating 4Gb of RAM for the JVM heap.
