@@ -1,6 +1,6 @@
 <project name="Voronoi" default="dist" basedir=".">
     <description>
-        simple example build file
+        build file for Voronoi
     </description>
     <!-- set global properties for this build -->
     <property name="src" location="src"/>
