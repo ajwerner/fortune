@@ -12,8 +12,9 @@ import java.util.*;
 public class Voronoi {
     public static final double MIN_DRAW_DIM = -5;
     public static final double MAX_DRAW_DIM = 5;
-    private static final double MAX_DIM = 10e10;
-    private static final double MIN_DIM = -10e10;
+    // Ghetto but just for drawing stuff
+    private static final double MAX_DIM = 10;
+    private static final double MIN_DIM = -10;
     private double sweepLoc;
     private final ArrayList<Point> sites;
     private final ArrayList<VoronoiEdge> edgeList;
