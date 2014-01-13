@@ -10,8 +10,8 @@ import java.util.*;
  * Created by ajwerner on 12/23/13.
  */
 public class Voronoi {
-    private static final double MAX_DIM = 1000;
-    private static final double MIN_DIM = -1000;
+    private static final double MAX_DIM = 10e10;
+    private static final double MIN_DIM = -10e10;
     private double sweepLoc;
     private final ArrayList<Point> sites;
     private final ArrayList<VoronoiEdge> edgeList;
@@ -79,9 +79,12 @@ public class Voronoi {
         arcs = new TreeMap<ArcKey, CircleEvent>();
 
         for (Point site : sites) {
+            if ((site.x > MAX_DIM || site.x < MIN_DIM) || (site.y > MAX_DIM || site.y < MIN_DIM))
+                throw new RuntimeException(String.format(
+                    "Invalid site in input, sites must be between %f and %f", MIN_DIM, MAX_DIM ));
             events.add(new Event(site));
         }
-        sweepLoc = 1000;
+        sweepLoc = MAX_DIM;
         do {
             Event cur = events.pollFirst();
             sweepLoc = cur.p.y;
@@ -95,7 +98,7 @@ public class Voronoi {
             }
         } while ((events.size() > 0));
 
-        this.sweepLoc -= 1000; // hack to draw negative infinite points
+        this.sweepLoc -= MIN_DIM; // hack to draw negative infinite points
         for (BreakPoint bp : breakPoints) {
             bp.finish();
         }
@@ -112,7 +115,8 @@ public class Voronoi {
         Map.Entry<ArcKey, CircleEvent> arcEntryAbove = arcs.floorEntry(new ArcQuery(cur.p));
         Arc arcAbove = (Arc) arcEntryAbove.getKey();
 
-        if (arcs.size() == 1 && arcAbove.site.y == cur.p.y) {
+        // Deal with the degenerate case where the first two points are at the same y value
+        if (arcs.size() == 0 && arcAbove.site.y == cur.p.y) {
             VoronoiEdge newEdge = new VoronoiEdge(arcAbove.site, cur.p);
             newEdge.p1 = new Point((cur.p.x + arcAbove.site.x)/2, Double.POSITIVE_INFINITY);
             BreakPoint newBreak = new BreakPoint(arcAbove.site, cur.p, newEdge, false, this);
