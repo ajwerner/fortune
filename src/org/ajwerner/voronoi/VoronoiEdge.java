@@ -22,7 +22,7 @@ public class VoronoiEdge {
     }
 
     public Point intersection(VoronoiEdge that) {
-        if (this.m == that.m && this.b != that.b) return null; // no intersection
+        if (this.m == that.m && this.b != that.b && this.isVertical == that.isVertical) return null; // no intersection
         double x, y;
         if (this.isVertical) {
             x = (this.site1.x + this.site2.x) / 2;
