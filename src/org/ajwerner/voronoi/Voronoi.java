@@ -5,6 +5,7 @@ import edu.princeton.cs.introcs.StdStats;
 import edu.princeton.cs.introcs.Stopwatch;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by ajwerner on 12/23/13.
@@ -162,32 +163,77 @@ public class Voronoi {
     }
 
     private void handleCircleEvent(CircleEvent ce) {
-        Arc arcRight = (Arc) arcs.higherKey(ce.arc);
-        Arc arcLeft = (Arc) arcs.lowerKey(ce.arc);
-        if (arcRight != null) {
-            CircleEvent falseCe = arcs.get(arcRight);
-            if (falseCe != null) events.remove(falseCe);
-            arcs.put(arcRight, null);
-        }
-        if (arcLeft != null) {
-            CircleEvent falseCe = arcs.get(arcLeft);
-            if (falseCe != null) events.remove(falseCe);
-            arcs.put(arcLeft, null);
-        }
         arcs.remove(ce.arc);
-
         ce.arc.left.finish(ce.vert);
         ce.arc.right.finish(ce.vert);
-
         breakPoints.remove(ce.arc.left);
         breakPoints.remove(ce.arc.right);
 
-        VoronoiEdge e = new VoronoiEdge(ce.arc.left.s1, ce.arc.right.s2);
+        Entry<ArcKey, CircleEvent> entryRight = arcs.higherEntry(ce.arc);
+        Entry<ArcKey, CircleEvent> entryLeft = arcs.lowerEntry(ce.arc);
+        Arc arcRight = null;
+        Arc arcLeft = null;
+
+        Point ceArcLeft = ce.arc.getLeft();
+        boolean cocircularJunction = ce.arc.getRight().equals(ceArcLeft);
+
+        if (entryRight != null) {
+            arcRight = (Arc) entryRight.getKey();
+            while (cocircularJunction && arcRight.getRight().equals(ceArcLeft)) {
+                arcs.remove(arcRight);
+                arcRight.left.finish(ce.vert);
+                arcRight.right.finish(ce.vert);
+                breakPoints.remove(arcRight.left);
+                breakPoints.remove(arcRight.right);
+
+                CircleEvent falseCe = entryRight.getValue();
+                if (falseCe != null) {
+                    events.remove(falseCe);
+                }
+
+                entryRight = arcs.higherEntry(arcRight);
+                arcRight = (Arc) entryRight.getKey();
+            }
+
+            CircleEvent falseCe = entryRight.getValue();
+            if (falseCe != null) {
+                events.remove(falseCe);
+                arcs.put(arcRight, null);
+            }
+        }
+        if (entryLeft != null) {
+            arcLeft = (Arc) entryLeft.getKey();
+            while (cocircularJunction && arcLeft.getLeft().equals(ceArcLeft)) {
+                arcs.remove(arcLeft);
+                arcLeft.left.finish(ce.vert);
+                arcLeft.right.finish(ce.vert);
+                breakPoints.remove(arcLeft.left);
+                breakPoints.remove(arcLeft.right);
+
+                CircleEvent falseCe = entryLeft.getValue();
+                if (falseCe != null) {
+                    events.remove(falseCe);
+                }
+
+                entryLeft = arcs.lowerEntry(arcLeft);
+                arcLeft = (Arc) entryLeft.getKey();
+            }
+
+            CircleEvent falseCe = entryLeft.getValue();
+            if (falseCe != null) {
+                events.remove(falseCe);
+                arcs.put(arcLeft, null);
+            }
+        }
+
+        VoronoiEdge e = new VoronoiEdge(arcLeft.right.s1, arcRight.left.s2);
         edgeList.add(e);
 
-        // Here we're trying to figure out if the org.ajwerner.voronoi.Voronoi vertex we've found is the left
+        // Here we're trying to figure out if the org.ajwerner.voronoi.Voronoi vertex
+        // we've found is the left
         // or right point of the new edge.
-        // If the edges being traces out by these two arcs take a right turn then we know
+        // If the edges being traces out by these two arcs take a right turn then we
+        // know
         // that the vertex is going to be above the current point
         boolean turnsLeft = Point.ccw(arcLeft.right.edgeBegin, ce.p, arcRight.left.edgeBegin) == 1;
         // So if it turns left, we know the next vertex will be below this vertex
@@ -195,11 +241,11 @@ public class Voronoi {
         boolean isLeftPoint = (turnsLeft) ? (e.m < 0) : (e.m > 0);
         if (isLeftPoint) {
             e.p1 = ce.vert;
-        }
-        else {
+        } else {
             e.p2 = ce.vert;
         }
-        BreakPoint newBP = new BreakPoint(ce.arc.left.s1, ce.arc.right.s2, e, !isLeftPoint, this);
+
+        BreakPoint newBP = new BreakPoint(arcLeft.right.s1, arcRight.left.s2, e, !isLeftPoint, this);
         breakPoints.add(newBP);
 
         arcRight.left = newBP;
