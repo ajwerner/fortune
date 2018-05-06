@@ -74,4 +74,17 @@ public class Point implements Comparable<Point> {
         this.draw();
         StdDraw.setPenColor(old);
     }
+
+    private static double EPSILON = 0.0000001;
+
+    private static boolean equals(double a, double b) {
+        if (a == b)
+            return true;
+        return Math.abs(a - b) < EPSILON * Math.max(Math.abs(a), Math.abs(b));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Point && equals(((Point) other).x, this.x) && equals(((Point) other).y, this.y);
+    }
 }
